@@ -5,7 +5,7 @@ var dota = new Dota2Api('68D4BBB60FB8A8F9C99A62145A7B6E27');
 var http = require('http');
 
 //Lets define a port we want to listen to
-const PORT=8080;
+const PORT=0.0.0.0:8080;
 
 //We need a function which handles requests and send response
 function handleRequest(request, response){
