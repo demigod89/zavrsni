@@ -1,0 +1,22 @@
+{
+  "name": "zavrsni",
+  "version": "0.0.0",
+  "description": "dota2 - personal tracker",
+  "main": "test-app.js",
+  "dependencies": {
+    "dota2api": "~0.1.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/demigod89/zavrsni.git"
+  },
+  "author": "",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/demigod89/zavrsni/issues"
+  }
+}
