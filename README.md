@@ -1,2 +1,2 @@
 # zavrsni
-dota2
+dota2 - personal tracker
