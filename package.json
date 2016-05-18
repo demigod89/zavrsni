@@ -2,9 +2,12 @@
   "name": "zavrsni",
   "version": "0.0.0",
   "description": "dota2 - personal tracker",
-  "main": "test-app.js",
+  "main": "app.js",
   "dependencies": {
-    "dota2api": "~0.1.1"
+    "dota2api": "~0.1.1",
+    "ejs": "~2.4.1",
+    "express": "~4.13.4",
+    "mongodb": "~2.1.16"
   },
   "devDependencies": {},
   "scripts": {
