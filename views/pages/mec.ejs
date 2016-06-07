@@ -1,0 +1,31 @@
+<% include ../partials/header %>
+
+<div class="container-fluid" id="container">
+  <h1>Match History</h1>
+  <div class="well well-light">
+    <h4>Keeper of The Light</h4>
+    <div class="row">
+      <div class="col-xs-12 col-sm-6 col-md-3" rv-each-input="inputs" rv-hide="input.hide" data-hide>
+        <h5 class="text-info">
+          <span rv-if="input.essential" rv-text="input.name"></span>
+          <a rv-unless="input.essential" href="#" rv-on-click="controller.toggleInput">
+            <span rv-text="input.name"></span>
+            <i class="fa fa-minus-circle"></i>
+          </a>
+        </h5>
+        <div class="input-group input-group-sm">
+          <input rv-type="input.type | default 'text'" class="form-control input-sm">
+          <span rv-if="input.addon" class="input-group-addon" rv-text="input.addon"></span>
+        </div>
+      </div>
+    </div>
+    <div class="inline-group">
+      <button type="button" class="btn btn-sm btn-info btn-show-input inline-item" rv-each-input="inputs" rv-show="input.hide" rv-on-click="controller.toggleInput" data-hide>
+        <span rv-text="input.name"></span>
+        <i class="fa fa-plus"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<% include ../partials/footer %>

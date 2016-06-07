@@ -1,5 +1,3 @@
-
-
 //Lets require/import the HTTP module
 var dota = require('./dota.js');
 var express = require('express');
@@ -21,9 +19,39 @@ app.get('/', function(req, res) {
 });
 
 // about page 
-app.get('/about', function(req, res) {
+app.get('/about', function(req, res) {																																																																																																																																					
     res.render('pages/about');
 });
 
-app.listen(8080);
-console.log('8080 is the magic port');
+// mec page
+app.get('/mec', function(req, res) {																																																																																																																																					
+    res.render('pages/mec');
+});
+
+//heroji page
+app.get('/heroji', function(req, res) {																																																																																																																																					
+    res.render('pages/heroji');
+});
+
+//rekordi page
+app.get('/rekordi', function(req, res) {																																																																																																																																					
+    res.render('pages/rekordi');
+});
+//snimke
+app.get('/snimke', function(req, res) {																																																																																																																																					
+    res.render('pages/snimke');
+});
+
+//kontakt
+app.get('/kontakt', function(req, res) {																																																																																																																																					
+    res.render('pages/kontakt');
+});
+
+//skini
+app.get('/skini', function(req, res) {																																																																																																																																					
+    res.render('pages/skini');
+});
+
+
+app.listen(3000);
+console.log('The magic port is 3000');
