@@ -22,31 +22,35 @@
                        DOTA 2 Personal
                     </a>
                 </li>
+                <% if (user) { %>
                 <li>
                     <a href="/about">Najviše igrani heroji</a>
                 </li>
+                <% } %>
+                <% if (user) { %>
                 <li>
                     <a href="/mec">Mečevi</a>
                 </li>
+                 <% } %>
                 <li>
                     <a href="/heroji">Heroji</a>
                 </li>
+                <% if (user) { %>
                 <li>
                     <a href="/rekordi">Rekordi</a>
                 </li>
-                
+                 <% } %>
+                  <% if (user) { %>
                 <li class="dropdown">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown">Stream i ponovljene snimke<span class="caret"></span></a>
                   <ul class="dropdown-menu" role="menu">
                     <li class="dropdown-header">Izaberi jedno</li>
                     <li><a href="/snimke">Ponovljene snimke</a></li>
-                    <li><a href="/skini">Download</a></li>
+                    <li><a href="/skini">Download</a></li>   
                   </ul>
-                </li>
-                <li>
-                    <a href="/login">Prijava</a>
-                </li>
-            </ul>
+                 </li>
+                 <% } %>
+                </ul>
         </nav>
         <!-- /#sidebar-wrapper -->
 
@@ -58,10 +62,14 @@
 				<span class="hamb-bottom"></span>
 	        </button>
             <div class="container">
+            <% if (user) { %>
                 <div class="row">
                     
-                    <div class="col-md-4">
-                        <img class="img-responsive" src="/img/header.svg" align="left">                 
+                    <div class="col-md-12">
+                        <div class="avatar">
+                            <img class="img-responsive img-thumbnail img-circle" src='<%= user.photos[2].value %>' alt='Your Avatar Image' align="left" />
+                            <a style="vertical-align:bottom" href="/logout">Odjava <%= user.displayName %></a>
+                        </div>              
                     </div>
                 </div> 
-                <br>
+            <% } %>

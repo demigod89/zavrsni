@@ -1,13 +1,40 @@
 //Lets require/import the HTTP module
 var dota = require('./dota.js');
-var fs = require('fs');
-var express = require('express');
 var bodyParser = require('body-parser');
-var session = require('express-session');
-var Steam = require('steam');
-var crypto = require("crypto")
-var app = express();
+var express = require('express')
+  , passport = require('passport')
+  , util = require('util')
+  , session = require('express-session')
+  , SteamStrategy = require('passport-steam').Strategy;
 
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
+
+passport.deserializeUser(function(obj, done) {
+  done(null, obj);
+});
+
+passport.use(new SteamStrategy({
+    returnURL: 'http://localhost:3000/auth/steam/return',
+    realm: 'http://localhost:3000/',
+    apiKey: '68D4BBB60FB8A8F9C99A62145A7B6E27'
+  },
+  function(identifier, profile, done) {
+    // asynchronous verification, for effect...
+    process.nextTick(function () {
+
+      // To keep the example simple, the user's Steam profile is returned to
+      // represent the logged-in user.  In a typical application, you would want
+      // to associate the Steam account with a user record in your database,
+      // and return that user instead.
+      profile.identifier = identifier;
+      return done(null, profile);
+    });
+  }
+));
+
+var app = express();
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');
@@ -20,109 +47,83 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 })); 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(session({
-  resave: false, // don't save session if unmodified
-  saveUninitialized: false, // don't create session until something stored
-  secret: 'shhhh, very secret'
-}));
+    secret: 'your secret',
+    name: 'name of session id',
+    resave: true,
+    saveUninitialized: true}));
 
-
+app.use(passport.initialize());
+app.use(passport.session());
 
 // use res.render to load up an ejs view file
 
 // index page 
 app.get('/', function(req, res) {
 	var callback = function (err, data) {
-		res.render('pages/index', { heroji: data.heroes});
+        res.render('pages/index', { user: req.user, heroji: data.heroes });
 	}
 	dota.getHeros(callback);
 });
 
 // about page 
 app.get('/about', function(req, res) {																																																																																																																																					
-    res.render('pages/about');
+    res.render('pages/about', { user: req.user });
 });
 
 // mec page
-app.get('/mec', function(req, res) {																																																																																																																																					
-    res.render('pages/mec');
+app.get('/mec', ensureAuthenticated, function(req, res){																																																																																																																																				
+    res.render('pages/mec', { user: req.user });
 });
 
 //heroji page
 app.get('/heroji', function(req, res) {																																																																																																																																					
-    res.render('pages/heroji');
+    res.render('pages/heroji', { user: req.user });
 });
 
 //rekordi page
-app.get('/rekordi', function(req, res) {																																																																																																																																					
-    res.render('pages/rekordi');
+app.get('/rekordi', ensureAuthenticated, function(req, res){																																																																																																																																					
+    res.render('pages/rekordi', { user: req.user });
 });
 //snimke
-app.get('/snimke', function(req, res) {																																																																																																																																					
-    res.render('pages/snimke');
+app.get('/snimke', ensureAuthenticated, function(req, res){ 																																																																																																																																				
+    res.render('pages/snimke', { user: req.user });
 });
 
 //kontakt
 app.get('/kontakt', function(req, res) {																																																																																																																																					
-    res.render('pages/kontakt');
+    res.render('pages/kontakt', { user: req.user });
 });
 
 //skini
-app.get('/skini', function(req, res) {																																																																																																																																					
-    res.render('pages/skini');
+app.get('/skini', ensureAuthenticated, function(req, res){ 																																																																																																																																				
+    res.render('pages/skini', { user: req.user });
 });
 
 app.get('/login', function(req, res) {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
     res.render('pages/login');
 });
 
-app.post('/login', function(req, res) {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
-    var username = req.body.username;
-    var password = req.body.password;
-    console.log(username);
-    console.log(password);
-    var steamClient = new Steam.SteamClient();
-    var steamUser = new Steam.SteamUser(steamClient);
-    var user = null;
-    steamClient.connect();
-    steamClient.on('connected', function() {
-        var SentryData = fs.readFileSync('sentry');
-        steamUser.logOn({
-            account_name: username,
-            password: password,
-            //auth_code: '8VKJ2',
-            sha_sentryfile: SentryData,
-        });
-    });
-    steamClient.on('logOnResponse', function(logonResp) {
-        if (logonResp.eresult == Steam.EResult.OK) {
-            console.log('Logged in!');
-            console.log(logonResp);
-            user = username;
-        }
-        if (user) {
-            // Regenerate session when signing in
-            // to prevent fixation
-            req.session.regenerate(function(){
-                // Store the user's primary key
-                // in the session store to be retrieved,
-                // or in this case the entire user object
-                req.session.user = username;
-                res.redirect('/');
-            });
-        } else {
-            console.log('Neispravni login podaci');
-            res.redirect('/login');
-        }
-    });
-    steamUser.on('updateMachineAuth', function(response, callback){
-        var hashedSentry = crypto.createHash('sha1').update(response.bytes).digest();
-        fs.writeFileSync('sentry', hashedSentry)
-        callback({
-            sha_file: hashedSentry
-        });
-    });
+app.get('/auth/steam',
+  passport.authenticate('steam', { failureRedirect: '/' }),
+  function(req, res) {
+    res.redirect('/');
 });
 
+app.get('/auth/steam/return',
+  passport.authenticate('steam', { failureRedirect: '/' }),
+  function(req, res) {
+    res.redirect('/');
+});
+
+app.get('/logout', ensureAuthenticated, function(req, res){ 
+  req.logout();
+  res.redirect('/');
+});
+
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) { return next(); }
+  res.redirect('/');
+}
 
 app.listen(3000);
 console.log('The magic port is 3000');

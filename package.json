@@ -11,6 +11,8 @@
     "express": "~4.13.4",
     "express-session": "~1.14.0",
     "mongodb": "~2.1.16",
+    "passport": "^0.3.2",
+    "passport-steam": "^1.0.4",
     "steam": "~1.4.0"
   },
   "devDependencies": {},

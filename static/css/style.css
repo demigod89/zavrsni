@@ -883,3 +883,25 @@ button#send {
   max-width: 20%;
 }
 
+.avatar {
+  position: absolute;
+  top: -60px;
+  right: 0px;
+  height: 50%;
+  display:table;
+}
+
+.avatar a {
+  vertical-align: middle !important;
+  display: table-cell;
+}
+
+.avatar img {
+  max-width: 40px;
+}
+
+
+#login {
+  text-align: center;
+  padding: 40px;
+}
