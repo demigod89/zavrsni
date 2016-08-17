@@ -487,16 +487,19 @@ img {
 #strengthHeader {
   color: red;
   font-size: 130%;
+  text-align: center;
 }
 
 #agilityHeader {
   color: rgb(39, 185, 46);
   font-size: 130%;
+  text-align: center;
 }
 
 #intelligenceHeader {
   color: rgb(7, 44, 232);
   font-size: 130%;
+  text-align: center;
 }
 
 #heroTable {
@@ -535,6 +538,7 @@ img {
   margin-right: 1em;
 }
 
+/*heroji*/
 *{
   -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -905,3 +909,9 @@ button#send {
   text-align: center;
   padding: 40px;
 }
+
+/*
+div img { 
+  display: inline-block !important;
+}
+*/

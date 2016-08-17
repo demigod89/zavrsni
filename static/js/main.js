@@ -24,9 +24,45 @@ $(document).ready(function () {
   
   $('[data-toggle="offcanvas"]').click(function () {
         $('#wrapper').toggleClass('toggled');
-  });  
-});
+  });
+  //data table jquery
+  var herostatsTable = $('#heroTableStats').DataTable({
+    "language": {
+      "emptyTable":"Podaci se učitavaju"
+    }
+  });
 
+  $.get( "http://api.herostats.io/heroes/all", function( data ) {
+    console.log(data);
+    Object.keys(data).forEach(function(key) {
+        console.log(data[key]);
+        switch(data[key].PrimaryStat) {
+          case 0:
+            data[key].PrimaryStat = 'Str';
+            break;
+          case 1:
+            data[key].PrimaryStat = 'Agi';
+            break;
+          case 2:
+            data[key].PrimaryStat = 'Int';
+            break;
+        }
+        herostatsTable.row.add( [
+            data[key].ID,
+            data[key].Name,
+            data[key].Movespeed,
+            data[key].MaxDmg,
+            data[key].MinDmg,
+            data[key].HP,
+            data[key].Mana,
+            data[key].StrGain,
+            data[key].AgiGain,
+            data[key].IntGain,
+            data[key].PrimaryStat,
+        ] ).draw( false );
+  });
+});
+});
 rivets.bind($('#container'), {
   inputs: [{
     name: 'Active Time',
@@ -78,10 +114,10 @@ $('.hide-list').click(function(){
 
 //contact
 
-$('document').ready(function() {
-  var msg = $('#message');
-  msg.autosize();
-});
+//$('document').ready(function() {
+//  var msg = $('#message');
+//  msg.autosize();
+//});
 
 
 

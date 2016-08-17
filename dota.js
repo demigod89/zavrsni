@@ -10,3 +10,10 @@ exports.getHeros = function (callback) {
 		callback(null, data)
 	});
 }
+
+
+//* <% for(var i=0; i<heroji.length; i++) {%>
+//    <img src="http://cdn.dota2.com/apps/dota2/images/heroes/<%= heroji[i].name.substring(14)%>_lg.png">
+// <% } %>
+//     
+

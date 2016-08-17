@@ -7,6 +7,9 @@ var express = require('express')
   , session = require('express-session')
   , SteamStrategy = require('passport-steam').Strategy;
 
+
+  
+
 passport.serializeUser(function(user, done) {
   done(null, user);
 });
@@ -60,7 +63,7 @@ app.use(passport.session());
 // index page 
 app.get('/', function(req, res) {
 	var callback = function (err, data) {
-        res.render('pages/index', { user: req.user, heroji: data.heroes });
+        res.render('pages/index', { user: req.user });
 	}
 	dota.getHeros(callback);
 });
@@ -76,8 +79,11 @@ app.get('/mec', ensureAuthenticated, function(req, res){
 });
 
 //heroji page
-app.get('/heroji', function(req, res) {																																																																																																																																					
-    res.render('pages/heroji', { user: req.user });
+app.get('/heroji', function(req, res) {	
+    var callback = function (err, data) {
+      res.render('pages/heroji', {user: req.user, heroji: data.heroes}); 
+    }																																	
+    dota.getHeros(callback);																																																																																																			
 });
 
 //rekordi page
