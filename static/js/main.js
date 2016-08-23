@@ -1,3 +1,7 @@
+$(document).ready(function() {
+    $(".dropdown-toggle").dropdown();
+});
+
 $(document).ready(function () {
   var trigger = $('.hamburger'),
       overlay = $('.overlay'),
@@ -32,37 +36,58 @@ $(document).ready(function () {
     }
   });
 
-  $.get( "http://api.herostats.io/heroes/all", function( data ) {
-    console.log(data);
-    Object.keys(data).forEach(function(key) {
-        console.log(data[key]);
-        switch(data[key].PrimaryStat) {
-          case 0:
-            data[key].PrimaryStat = 'Str';
-            break;
-          case 1:
-            data[key].PrimaryStat = 'Agi';
-            break;
-          case 2:
-            data[key].PrimaryStat = 'Int';
-            break;
+  $.get( "http://api.herostats.io/heroes/all",   function( data ) {
+      $.get( "dataimg.json",   function( images ) {
+
+        var getImage = function (id) {
+          images.forEach(function(img) {
+            if (img.id == id) {
+              console.log(img.url);
+              return img.url;
+            }
+          });
         }
-        herostatsTable.row.add( [
-            data[key].ID,
-            data[key].Name,
-            data[key].Movespeed,
-            data[key].MaxDmg,
-            data[key].MinDmg,
-            data[key].HP,
-            data[key].Mana,
-            data[key].StrGain,
-            data[key].AgiGain,
-            data[key].IntGain,
-            data[key].PrimaryStat,
-        ] ).draw( false );
+        console.log(data);
+        Object.keys(data).forEach(function(key) {
+            switch(data[key].PrimaryStat) {
+              case 0:
+                data[key].PrimaryStat = 'Str';
+                break;
+              case 1:
+                data[key].PrimaryStat = 'Agi';
+                break;
+              case 2:
+                data[key].PrimaryStat = 'Int';
+                break;
+            }
+
+            var image = null;
+            images.forEach(function(img) {
+              if (img.id === data[key].ID) {
+                image = img.url;
+              }
+            });
+
+            image = '<img src="' + image + '">';
+
+            herostatsTable.row.add( [
+                image,
+                data[key].Name,
+                data[key].Movespeed,
+                data[key].MinDmg,
+                data[key].MaxDmg,
+                data[key].HP,
+                data[key].Mana,
+                data[key].StrGain,
+                data[key].AgiGain,
+                data[key].IntGain,
+                data[key].PrimaryStat,
+            ] ).draw();
+        });
+    });
   });
 });
-});
+
 rivets.bind($('#container'), {
   inputs: [{
     name: 'Active Time',
@@ -111,6 +136,7 @@ $('.show-list').click(function(){
 $('.hide-list').click(function(){
   $('.wrapper').removeClass('list-mode');
 });
+
 
 //contact
 

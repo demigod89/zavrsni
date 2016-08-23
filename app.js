@@ -62,10 +62,7 @@ app.use(passport.session());
 
 // index page 
 app.get('/', function(req, res) {
-	var callback = function (err, data) {
-        res.render('pages/index', { user: req.user });
-	}
-	dota.getHeros(callback);
+  res.render('pages/index', { user: req.user });
 });
 
 // about page 
@@ -80,10 +77,10 @@ app.get('/mec', ensureAuthenticated, function(req, res){
 
 //heroji page
 app.get('/heroji', function(req, res) {	
-    var callback = function (err, data) {
-      res.render('pages/heroji', {user: req.user, heroji: data.heroes}); 
-    }																																	
-    dota.getHeros(callback);																																																																																																			
+  if (req.user) {
+    console.log(dota.getSteamAccId(req.user.id));
+  }
+  res.render('pages/heroji', {user: req.user}); 																																																																																							
 });
 
 //rekordi page

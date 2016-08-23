@@ -132,7 +132,7 @@ html { height: 100%;}
 
 .sidebar-nav li a {
     display: block;
-    color: #ddd;
+    color: #ddd !important;
     text-decoration: none;
     padding: 10px 15px 10px 30px;    
 }
@@ -143,9 +143,8 @@ html { height: 100%;}
 .sidebar-nav li.open a:hover,
 .sidebar-nav li.open a:active,
 .sidebar-nav li.open a:focus{
-    color: #fff;
     text-decoration: none;
-    background-color: transparent;
+    background-color: transparent !important;
 }
 
 .sidebar-nav > .sidebar-brand {
