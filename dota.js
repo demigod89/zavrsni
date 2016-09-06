@@ -1,18 +1,80 @@
-var Dota2Api = require('dota2api');
-var dota = new Dota2Api('68D4BBB60FB8A8F9C99A62145A7B6E27');
 var bignumber = require('bignumber.js');
+var Client = require('node-rest-client').Client;
+var client = new Client();
+var async = require("async");
 
-exports.getHeros = function (callback) {
-	dota.getHeroes(function (err, data) {
-		if (err != null) {
-			callback(err, null)
-			return;
-		}
-		callback(null, data)
-	});
+var host = 'http://api.steampowered.com/'
+var key = '68D4BBB60FB8A8F9C99A62145A7B6E27'
+var slikeitem = 'http://cdn.dota2.com/apps/dota2/images/items/'
+var host1 = 'https://api.opendota.com/api/players/'
+
+
+var heroji = null;
+exports.heroji = heroji;
+
+
+// http://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/v1?key=68D4BBB60FB8A8F9C99A62145A7B6E27&account_id=208648896 
+
+var getMatchHistory = function (account_id, callback) {
+	account_id = new bignumber(account_id).minus('76561197960265728') - 0
+	client.get(host + "IDOTA2Match_570/GetMatchHistory/v1?key=" + key + "&account_id=" + account_id, callback);
 }
 
-exports.getSteamAccId = function (steamId) {
-	return new bignumber(steamId).minus('76561197960265728') - 0;
-}     
+// http://api.steampowered.com/IEconDOTA2_570/GetHeroes/v1?key=68D4BBB60FB8A8F9C99A62145A7B6E27&language=en
+
+var getHeroes = function (callback) {
+	client.get(host + "IEconDOTA2_570/GetHeroes/v1?key=" + key + "&language=en" , callback);
+
+}
+
+exports.podacimecevi = function (account_id) {
+	async.parallel([
+	    function(callback) {
+	        getMatchHistory(account_id, function (data, response) {
+			    callback(null, data);
+			});
+	    },
+	    function(callback) {
+	        getHeroes(function (data, response) {
+			    callback(null, data);
+			});
+	    }
+	], function(err, results) {
+	    console.log(results[0].result.matches);
+	    heroji = results[1].result.heroes;
+	});
+};
+
+// http://api.steampowered.com/IEconDOTA2_570/GetGameItems/v1?key=68D4BBB60FB8A8F9C99A62145A7B6E27&language=en
+
+exports.getGameItems = function (callback) {
+	client.get(host + "IEconDOTA2_570/GetHeroes/v1?key=" + key + "&language=en", callback);
+}
+
+// http://api.steampowered.com/IDOTA2Match_570/GetMatchDetails/v1?key=68D4BBB60FB8A8F9C99A62145A7B6E27&match_id=2622697116
+
+exports.getMatchDetails = function (match_id,callback) {
+	client.get(host + "IDOTA2Match_570/GetMatchDetails/v1?key=" + key + "&language=en&match_id=" + match_id,callback);
+}
+
+// https://api.opendota.com/api/players/{account_id}/heroes
+
+exports.getPlayedHeroes = function (account_id, callback) {
+	account_id = new bignumber(account_id).minus('76561197960265728') - 0
+	client.get(host1 + account_id + '/heroes', callback);
+}
+
+// https://api.opendota.com/api/players/{account_id}/wl
+
+exports.getWinLose = function (account_id,callback) {
+	account_id = new bignumber(account_id).minus('76561197960265728') - 0
+	client.get(host1 + account_id + '/wl', callback);
+}
+
+// https://api.opendota.com/api/players/{account_id}/records
+
+exports.getDotaRecords = function (account_id, callback) {
+	account_id = new bignumber(account_id).minus('76561197960265728') - 0
+	client.get(host1 + account_id + '/records', callback);
+}
 

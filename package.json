@@ -4,8 +4,10 @@
   "description": "dota2 - personal tracker",
   "main": "app.js",
   "dependencies": {
+    "async": "^2.0.1",
     "body-parser": "~1.15.2",
     "crypto": "0.0.3",
+    "dota": "0.0.2",
     "dota2api": "~0.1.1",
     "ejs": "~2.4.1",
     "express": "~4.13.4",

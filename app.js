@@ -1,6 +1,7 @@
 //Lets require/import the HTTP module
 var dota = require('./dota.js');
 var bodyParser = require('body-parser');
+var url = require('url');
 var express = require('express')
   , passport = require('passport')
   , util = require('util')
@@ -71,15 +72,24 @@ app.get('/about', function(req, res) {
 });
 
 // mec page
-app.get('/mec', ensureAuthenticated, function(req, res){																																																																																																																																				
-    res.render('pages/mec', { user: req.user });
+app.get('/mec', ensureAuthenticated, function(req, res){
+  dota.podacimecevi(req.user.id);
+  res.render('pages/mec', { user: req.user});
+});
+
+// mec detalji
+app.get('/mec-detalji', ensureAuthenticated, function(req, res){
+  var url_parts = url.parse(req.url, true);
+  var query = url_parts.query;
+  var matchId = query.match;
+  var match = dota.getMatchDetails(matchId, function (data, response) {
+      console.log(data);
+      res.render('pages/mec', { user: req.user});
+  });
 });
 
 //heroji page
-app.get('/heroji', function(req, res) {	
-  if (req.user) {
-    console.log(dota.getSteamAccId(req.user.id));
-  }
+app.get('/heroji', function(req, res) {
   res.render('pages/heroji', {user: req.user}); 																																																																																							
 });
 
