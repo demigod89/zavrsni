@@ -1,6 +1,7 @@
 //Lets require/import the HTTP module
 var dota = require('./dota.js');
 var bodyParser = require('body-parser');
+var baza =  require ('./baza.js');
 var url = require('url');
 var express = require('express')
   , passport = require('passport')
@@ -9,7 +10,6 @@ var express = require('express')
   , SteamStrategy = require('passport-steam').Strategy;
 
 
-  
 
 passport.serializeUser(function(user, done) {
   done(null, user);
@@ -40,6 +40,8 @@ passport.use(new SteamStrategy({
 
 var app = express();
 
+
+
 // set the view engine to ejs
 app.set('view engine', 'ejs');
 
@@ -63,6 +65,15 @@ app.use(passport.session());
 
 // index page 
 app.get('/', function(req, res) {
+  if (req.user) {
+    var collection = baza.db.collection('igraci');
+    // Insert some documents
+    collection.insertOne(req.user, function(err, result) {
+      if (err) {
+        console.log(err);
+      }
+    });
+  }
   res.render('pages/index', { user: req.user });
 });
 
@@ -90,13 +101,31 @@ app.get('/mec-detalji', ensureAuthenticated, function(req, res){
 
 //heroji page
 app.get('/heroji', function(req, res) {
-  res.render('pages/heroji', {user: req.user}); 																																																																																							
+  // Get the documents collection 
+  var collection = baza.db.collection('heroji');
+  // Find some documents 
+  collection.find({}).toArray(function(err, heroji) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    res.render('pages/heroji', {user: req.user, heroji: heroji}); 
+  });																																																																																				
 });
 
 //rekordi page
-app.get('/rekordi', ensureAuthenticated, function(req, res){																																																																																																																																					
-    res.render('pages/rekordi', { user: req.user });
+app.get('/rekordi', ensureAuthenticated, function(req, res){
+    var collection = baza.db.collection('rekordi');
+    // Find some documents 
+    collection.find({}).toArray(function(err, rekordi) {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      res.render('pages/rekordi', { user: req.user, rekordi: rekordi[0] }); 
+    }); 
 });
+
 //snimke
 app.get('/snimke', ensureAuthenticated, function(req, res){ 																																																																																																																																				
     res.render('pages/snimke', { user: req.user });
