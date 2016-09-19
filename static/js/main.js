@@ -1,8 +1,21 @@
-$(document).ready(function() {
-    $(".dropdown-toggle").dropdown();
-});
+
+function timeConverter(UNIX_timestamp){
+  var a = new Date(UNIX_timestamp * 1000);
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var year = a.getFullYear();
+  var month = months[a.getMonth()];
+  var date = a.getDate();
+  var hour = a.getHours();
+  var min = a.getMinutes();
+  var sec = a.getSeconds();
+  var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
+  return time;
+}
+
+
 
 $(document).ready(function () {
+  $(".dropdown-toggle").dropdown();
   var trigger = $('.hamburger'),
       overlay = $('.overlay'),
      isClosed = false;
@@ -29,102 +42,90 @@ $(document).ready(function () {
   $('[data-toggle="offcanvas"]').click(function () {
         $('#wrapper').toggleClass('toggled');
   });
-  //data table jquery
-  var herostatsTable = $('#heroTableStats').DataTable({
-    "language": {
-      "emptyTable":"Podaci se učitavaju"
-    }
-  });
 
-  $.get( "http://api.herostats.io/heroes/all",   function( data ) {
-      var getImage = function (id) {
-        images.forEach(function(img) {
-          if (img.id == id) {
-            console.log(img.url);
-            return img.url;
-          }
-        });
+  if (window.location.pathname === '/heroji') {
+    var herostatsTable = $('#heroTableStats').DataTable({
+      "language": {
+        "emptyTable":"Podaci se učitavaju"
       }
-      console.log(data);
-      Object.keys(data).forEach(function(key) {
-          switch(data[key].PrimaryStat) {
-            case 0:
-              data[key].PrimaryStat = 'Str';
-              break;
-            case 1:
-              data[key].PrimaryStat = 'Agi';
-              break;
-            case 2:
-              data[key].PrimaryStat = 'Int';
-              break;
-          }
-
-          var image = null;
+    });
+    $.get( "http://api.herostats.io/heroes/all",   function( data ) {
+        var getImage = function (id) {
           images.forEach(function(img) {
-            if (img.id === data[key].ID) {
-              image = img.url;
+            if (img.id == id) {
+              console.log(img.url);
+              return img.url;
             }
           });
+        }
+        console.log(data);
+        Object.keys(data).forEach(function(key) {
+            switch(data[key].PrimaryStat) {
+              case 0:
+                data[key].PrimaryStat = 'Str';
+                break;
+              case 1:
+                data[key].PrimaryStat = 'Agi';
+                break;
+              case 2:
+                data[key].PrimaryStat = 'Int';
+                break;
+            }
 
-          image = '<img src="' + image + '">';
+            var image = null;
+            images.forEach(function(img) {
+              if (img.id === data[key].ID) {
+                image = img.url;
+              }
+            });
 
-          herostatsTable.row.add( [
-              image,
-              data[key].Name,
-              data[key].Movespeed,
-              data[key].MinDmg,
-              data[key].MaxDmg,
-              data[key].HP,
-              data[key].Mana,
-              data[key].StrGain,
-              data[key].AgiGain,
-              data[key].IntGain,
-              data[key].PrimaryStat,
-          ] ).draw();
+            image = '<img src="' + image + '">';
+
+            herostatsTable.row.add( [
+                image,
+                data[key].Name,
+                data[key].Movespeed,
+                data[key].MinDmg,
+                data[key].MaxDmg,
+                data[key].HP,
+                data[key].Mana,
+                data[key].StrGain,
+                data[key].AgiGain,
+                data[key].IntGain,
+                data[key].PrimaryStat,
+            ] ).draw();
+        });
+    });
+  } else if (window.location.pathname === '/mec') {
+    var matchTable = $('#mecevi').DataTable({
+      "language": {
+        "emptyTable":"Podaci se učitavaju"
+      },
+      "pageLength": 10,
+      "order": [[ 1, "desc" ]]
+    });
+    mecevi.result.matches.forEach(function(mec) {
+      var hero = null;
+      mec.players.forEach(function(player) {
+        if (player.account_id === accId) {
+          heroji.result.heroes.forEach(function(heroj) {
+            if (player.hero_id === heroj.id) {
+              hero = heroj.localized_name;
+            }
+          });
+        }
       });
-  });
+      matchTable.row.add( [
+          mec.match_id,
+          timeConverter(mec.start_time),
+          hero,
+          '<button type="button" class="btn btn-success" onClick="prikaziDetalje(' + mec.match_id + ')">Detalji</button>'
+      ] ).draw();
+    });
+  }
+
 });
 
-rivets.bind($('#container'), {
-  inputs: [{
-    name: 'Active Time',
-    addon: 'Minutes',
-    essential: true
-  }, {
-    name: 'GPM',
-    addon: 'Gold',
-    essential: true
-  }, {
-    name: 'Kill Participation',
-    addon: '%',
-    hide: true
-  }, {
-    name: 'Death Participation',
-    addon: '%',
-    hide: true
-  }, {
-    name: 'Hero Damage',
-    addon: '%',
-    hide: true
-  }],
-  controller: {
-    toggleInput: function(e, model) {
-      e.preventDefault();
-      var effect = $(this).hasClass('btn-show-input') ? 'fadeOutUp' : 'fadeOutDown';
-      var $el = $(this).closest('[data-hide]');
-      $el.addClass(effect + ' animated').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
-        $el.removeClass(effect + ' animated');
-        model.input.hide = !model.input.hide;
-      });
-    }
-  }
-});
-
-rivets.formatters.default = {
-  read: function(value, arg) {
-    return value || arg;
-  }
-}
 
 $('.show-list').click(function(){
   $('.wrapper').addClass('list-mode');
@@ -133,14 +134,6 @@ $('.show-list').click(function(){
 $('.hide-list').click(function(){
   $('.wrapper').removeClass('list-mode');
 });
-
-
-//contact
-
-//$('document').ready(function() {
-//  var msg = $('#message');
-//  msg.autosize();
-//});
 
 
 

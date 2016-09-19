@@ -16,6 +16,10 @@ exports.heroji = heroji;
 
 // http://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/v1?key=68D4BBB60FB8A8F9C99A62145A7B6E27&account_id=208648896 
 
+exports.getAccId = function (account_id) {
+	return new bignumber(account_id).minus('76561197960265728') - 0;
+}
+
 var getMatchHistory = function (account_id, callback) {
 	account_id = new bignumber(account_id).minus('76561197960265728') - 0
 	client.get(host + "IDOTA2Match_570/GetMatchHistory/v1?key=" + key + "&account_id=" + account_id, callback);
@@ -28,7 +32,7 @@ var getHeroes = function (callback) {
 
 }
 
-exports.podacimecevi = function (account_id) {
+exports.podacimecevi = function (account_id, callback) {
 	async.parallel([
 	    function(callback) {
 	        getMatchHistory(account_id, function (data, response) {
@@ -41,9 +45,7 @@ exports.podacimecevi = function (account_id) {
 			});
 	    }
 	], function(err, results) {
-	    console.log(results[0].result.matches);
-	    heroji = results[1].result.heroes;
-	    console.log (heroji);
+	    callback(err, results);
 	});
 };
 
@@ -56,7 +58,7 @@ exports.getGameItems = function (callback) {
 // http://api.steampowered.com/IDOTA2Match_570/GetMatchDetails/v1?key=68D4BBB60FB8A8F9C99A62145A7B6E27&match_id=2622697116
 
 exports.getMatchDetails = function (match_id,callback) {
-	client.get(host + "IDOTA2Match_570/GetMatchDetails/v1?key=" + key + "&language=en&match_id=" + match_id,callback);
+	client.get('https://api.opendota.com/api/matches/' + match_id, callback);
 }
 
 // https://api.opendota.com/api/players/{account_id}/heroes

@@ -78,14 +78,20 @@ app.get('/', function(req, res) {
 });
 
 // about page 
-app.get('/about', function(req, res) {																																																																																																																																					
+app.get('/about', function(req, res) {
     res.render('pages/about', { user: req.user });
 });
 
 // mec page
 app.get('/mec', ensureAuthenticated, function(req, res){
-  dota.podacimecevi(req.user.id);
-  res.render('pages/mec', { user: req.user});
+  dota.podacimecevi(req.user.id, function (err, results) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    var accId = dota.getAccId(req.user.id);
+    res.render('pages/mec', { user: req.user, mecevi: results[0], heroji: results[1], accid: accId});
+  });
 });
 
 // mec detalji
@@ -94,8 +100,14 @@ app.get('/mec-detalji', ensureAuthenticated, function(req, res){
   var query = url_parts.query;
   var matchId = query.match;
   var match = dota.getMatchDetails(matchId, function (data, response) {
-      console.log(data);
-      res.render('pages/mec', { user: req.user});
+      var accId = dota.getAccId(req.user.id);
+      var detail = null;
+      data.players.forEach(function(player) {
+        if (player.account_id === accId) {
+          detail = player;
+        }
+      });
+      res.send(JSON.stringify(detail));
   });
 });
 
@@ -132,19 +144,9 @@ app.get('/rekordi', ensureAuthenticated, function(req, res){
     }); 
 });
 
-//snimke
-app.get('/snimke', ensureAuthenticated, function(req, res){ 																																																																																																																																				
-    res.render('pages/snimke', { user: req.user });
-});
-
 //kontakt
 app.get('/kontakt', function(req, res) {																																																																																																																																					
     res.render('pages/kontakt', { user: req.user });
-});
-
-//skini
-app.get('/skini', ensureAuthenticated, function(req, res){ 																																																																																																																																				
-    res.render('pages/skini', { user: req.user });
 });
 
 app.get('/login', function(req, res) {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  

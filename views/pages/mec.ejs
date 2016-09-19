@@ -1,32 +1,77 @@
 <% include ../partials/header %>
 <% include ../partials/headerimg %>
-
-<div class="container-fluid" id="container">
-  <h1>Match History</h1>
-  <div class="well well-light">
-    <h4>Keeper of The Light</h4>
+<script type="text/javascript">
+    var myChart = null;
+    Chart.defaults.global.legend.display = false;
+    function prikaziDetalje(matchId) {
+        $.get( "/mec-detalji?match=" + matchId,   function( data ) {
+          data = JSON.parse(data);
+          console.log(data);
+          if (data.isRadiant) {
+            $('#isradiant').html('<h4><span class="label label-default">Radiant</span></h4>');
+          } else  {
+            $('#isradiant').html('<h4><span class="label label-default">Dire</span></h4>');
+          }
+          if (data.radiant_win && data.isRadiant || !data.radiant_win && !data.isRadiant) {
+            $('#winlose').html('<h4><span class="label label-success">Pobjeda</span></h4>');
+          } else  {
+            $('#winlose').html('<h4><span class="label label-danger">Izgubljeno</span></h4>');
+          }
+          var data = {
+              labels: ["Kills", "Deaths", "Assists", "Denies"],
+              datasets: [
+                  {
+                      label: "<%= user.displayName %>",
+                      backgroundColor: "rgba(179,181,198,0.2)",
+                      borderColor: "rgba(179,181,198,1)",
+                      pointBackgroundColor: "rgba(179,181,198,1)",
+                      pointBorderColor: "#fff",
+                      pointHoverBackgroundColor: "#fff",
+                      pointHoverBorderColor: "rgba(179,181,198,1)",
+                      data: [data.kills, data.deaths, data.assists, data.denies]
+                  }
+              ]
+          };
+          $('#mac-detalji').remove();
+          $('#graf').html('<canvas id="mac-detalji" width="100" height="100"></canvas>');
+          var ctx = $("#mac-detalji");
+          if (myChart != null) {
+            myChart.destroy();
+          }
+          var myChart = new Chart(ctx, {
+            type: 'radar',
+            data: data,
+          });
+        });
+    }
+</script>
     <div class="row">
-      <div class="col-xs-12 col-sm-6 col-md-3" rv-each-input="inputs" rv-hide="input.hide" data-hide>
-        <h5 class="text-info">
-          <span rv-if="input.essential" rv-text="input.name"></span>
-          <a rv-unless="input.essential" href="#" rv-on-click="controller.toggleInput">
-            <span rv-text="input.name"></span>
-            <i class="fa fa-minus-circle"></i>
-          </a>
-        </h5>
-        <div class="input-group input-group-sm">
-          <input rv-type="input.type | default 'text'" class="form-control input-sm">
-          <span rv-if="input.addon" class="input-group-addon" rv-text="input.addon"></span>
+      <div class="col-md-8 centered">
+        <table id="mecevi" border=0 width="100%" >
+            <thead> 
+              <th>Meč ID</th>
+              <th>Datum</th>
+              <th>Heroj</th>
+              <th>Prikazi</th>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+       </div>
+      <div class="col-md-4 centered">
+        <div id="graf">
+          
         </div>
+        <div id="winlose"></div>
+        <hr>
+        <div id="isradiant"></div>
+        
       </div>
     </div>
-    <div class="inline-group">
-      <button type="button" class="btn btn-sm btn-info btn-show-input inline-item" rv-each-input="inputs" rv-show="input.hide" rv-on-click="controller.toggleInput" data-hide>
-        <span rv-text="input.name"></span>
-        <i class="fa fa-plus"></i>
-      </button>
-    </div>
-  </div>
-</div>
+<script type="text/javascript">
+    var mecevi = <%- JSON.stringify(mecevi) %>;
+    var heroji = <%- JSON.stringify(heroji) %>;
+    var accId = <%= accid %>;
+</script>
 
 <% include ../partials/footer %>
