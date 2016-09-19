@@ -117,12 +117,18 @@ app.get('/heroji', function(req, res) {
 app.get('/rekordi', ensureAuthenticated, function(req, res){
     var collection = baza.db.collection('rekordi');
     // Find some documents 
-    collection.find({}).toArray(function(err, rekordi) {
+    collection.find({}).sort({_id:-1}).limit(1).toArray(function(err, rekordi) {
       if (err) {
         console.log(err);
         return;
       }
-      res.render('pages/rekordi', { user: req.user, rekordi: rekordi[0] }); 
+      if (rekordi.length === 0) {
+        dota.insertRecords(req.user.id, function (rekordi) {
+          res.render('pages/rekordi', { user: req.user, rekordi: rekordi[0] }); 
+        });
+      } else {
+        res.render('pages/rekordi', { user: req.user, rekordi: rekordi[0] }); 
+      }
     }); 
 });
 

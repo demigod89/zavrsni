@@ -86,6 +86,7 @@ var rekordi = function (account_id, finalCallback) {
 	async.parallel([
 	    function(callback) {
 	        getDotaRecords(account_id, function (data, response) {
+
 				callback(null, data);
 			});
 	    },
@@ -106,145 +107,42 @@ var rekordi = function (account_id, finalCallback) {
 
 };
 
-exports.getRekordiDb = function (account_id, finalCallback) {
-
-	async.parallel([
-	    function(callback) {
-		  var collection = baza.db.collection('rekordi');
-		  // Find some documents 
-		  collection.aggregate([
-		    {$match: {"igrac": account_id} }, 
-		    {$unwind: '$kills'}, 
-		    {$group: {
-		        _id: "$kills.hero",
-		        "max": {$max: "$kills.kills" },
-		    }},
-		  ]).toArray(function(err, rekordi) {
-		    if (err) {
-		      console.log(err);
-		      return;
-		    }
-		    callback(null, rekordi);
-		  });
-	    },
-	    function(callback) {
-		  var collection = baza.db.collection('rekordi');
-		  // Find some documents 
-		  collection.aggregate([
-		    {$match: {"igrac": account_id} }, 
-		    {$unwind: '$assists'}, 
-		    {$group: {
-		        _id: "$assists.hero",
-		        "max": {$max: "$assists.assists" },
-		    }},
-		  ]).toArray(function(err, rekordi) {
-		    if (err) {
-		      console.log(err);
-		      return;
-		    }
-		    callback(null, rekordi);
-		  });
-	    },
-	    function(callback) {
-		  var collection = baza.db.collection('rekordi');
-		  // Find some documents 
-		  collection.aggregate([
-		    {$match: {"igrac": account_id} }, 
-		    {$unwind: '$kda'}, 
-		    {$group: {
-		        _id: "$kda.hero",
-		        "max": {$max: "$kda.kda" },
-		    }},
-		  ]).toArray(function(err, rekordi) {
-		    if (err) {
-		      console.log(err);
-		      return;
-		    }
-		    callback(null, rekordi);
-		  });
-	    },
-	], function(err, results) {
-		finalCallback(err, results);
+exports.insertRecords = function(account_id, callback) {
+  rekordi(account_id, function(err, results) {
+    results[1].forEach(function(entry) {
+      if (results[0].kills.hero_id === entry.id) {
+        results[0].kills.hero = entry.localized_name;
+        results[0].kills.img = entry.localized_name.toLowerCase().split(' ').join('_') + '_full.png';
+      }
+      if (results[0].assists.hero_id === entry.id) {
+        results[0].assists.hero = entry.localized_name;
+        results[0].assists.img = entry.localized_name.toLowerCase().split(' ').join('_') + '_full.png';
+      }
+      if (results[0].kda.hero_id === entry.id) {
+        results[0].kda.hero = entry.localized_name;
+        results[0].kda.img = entry.localized_name.toLowerCase().split(' ').join('_') + '_full.png';
+      }
+      if (results[0].gold_per_min.hero_id === entry.id) {
+        results[0].gold_per_min.hero = entry.localized_name;
+        results[0].gold_per_min.img = entry.localized_name.toLowerCase().split(' ').join('_') + '_full.png';
+      }
+      if (results[0].last_hits.hero_id === entry.id) {
+        results[0].last_hits.hero = entry.localized_name;
+        results[0].last_hits.img = entry.localized_name.toLowerCase().split(' ').join('_') + '_full.png';
+      }
+      if (results[0].denies.hero_id === entry.id) {
+        results[0].denies.hero = entry.localized_name;
+        results[0].denies.img = entry.localized_name.toLowerCase().split(' ').join('_') + '_full.png';
+      }
+    });
+    results[0].igrac = account_id;
+	var collection = baza.db.collection('rekordi');
+	// Insert some documents
+	collection.insertOne(results[0], function(err, result) {
+		if (err) {
+			console.log(err);
+		}
+		callback(results);
 	});
-
-};
-
-exports.rekordi = rekordi;
-
-/*
-setTimeout(function() {
-  var collection = baza.db.collection('igraci');
-  // Find some documents 
-  collection.find({}).toArray(function(err, igraci) {
-    if (err) {
-      console.log(err);
-      return;
-    }
-    igraci.forEach(function(igrac) {
-	  rekordi(igrac.id, function(err, results) {
-	    console.log(results[0].kills);
-	    results[1].forEach(function(entry) {
-	      if (results[0].kills.hero_id === entry.id) {
-	        results[0].kills.hero = entry.localized_name;
-	        results[0].kills.img = entry.localized_name.toLowerCase().split(' ').join('_') + '_full.png';
-	      }
-	      if (results[0].assists.hero_id === entry.id) {
-	        results[0].assists.hero = entry.localized_name;
-	        results[0].assists.img = entry.localized_name.toLowerCase().split(' ').join('_') + '_full.png';
-	      }
-	      if (results[0].kda.hero_id === entry.id) {
-	        results[0].kda.hero = entry.localized_name;
-	        results[0].kda.img = entry.localized_name.toLowerCase().split(' ').join('_') + '_full.png';
-	      }
-	    });
-	    results[0].igrac = igrac.id;
-		var collection = baza.db.collection('rekordi');
-		// Insert some documents
-		collection.insertOne(results[0], function(err, result) {
-			if (err) {
-				console.log(err);
-			}
-		});
-	  });	
-    });
-  });
-}, 1000);
-*/
-
-setInterval(function() {
-  var collection = baza.db.collection('igraci');
-  // Find some documents 
-  collection.find({}).toArray(function(err, igraci) {
-    if (err) {
-      console.log(err);
-      return;
-    }
-    igraci.forEach(function(igrac) {
-	  rekordi(igrac.id, function(err, results) {
-	    console.log(results[0].kills);
-	    results[1].forEach(function(entry) {
-	      if (results[0].kills.hero_id === entry.id) {
-	        results[0].kills.hero = entry.localized_name;
-	        results[0].kills.img = entry.localized_name.toLowerCase().split(' ').join('_') + '_full.png';
-	      }
-	      if (results[0].assists.hero_id === entry.id) {
-	        results[0].assists.hero = entry.localized_name;
-	        results[0].assists.img = entry.localized_name.toLowerCase().split(' ').join('_') + '_full.png';
-	      }
-	      if (results[0].kda.hero_id === entry.id) {
-	        results[0].kda.hero = entry.localized_name;
-	        results[0].kda.img = entry.localized_name.toLowerCase().split(' ').join('_') + '_full.png';
-	      }
-	    });
-	    results[0].igrac = igrac.id;
-		var collection = baza.db.collection('rekordi');
-		// Insert some documents
-		collection.insertOne(results[0], function(err, result) {
-			if (err) {
-				console.log(err);
-			}
-		});
-	  });	
-    });
-  });
-}, 24*60*60*1000);
+  });	
+}

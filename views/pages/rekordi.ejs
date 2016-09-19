@@ -6,7 +6,7 @@
 		</div>
 		<div class="row">
 		  <div class="col-md-4 centered">
-		  	<h3><strong>Ubojstva</strong></h3>
+		  	<h3><strong>Ubojstva heroja</strong></h3>
 		  	<h4><%= rekordi.kills.hero %></h4>
 		  	<img class="img-thumbnail" src="/img/heroes/<%= rekordi.kills.img %>" width="160" height="80">
 		  	<h4><span class="label label-default"><%= rekordi.kills.kills %></span></h4>
@@ -23,5 +23,25 @@
 		  	<img class="img-thumbnail" src="/img/heroes/<%= rekordi.kda.img %>" width="160" height="80">
 		  	<h4><span class="label label-default"><%= rekordi.kda.kda %></span></h4>
 		  </div>
+		</div>
+		<div class="row">
+			<div class="col-md-4 centered">
+			  	<h3><strong>Zlato po minuti</strong></h3>
+			  	<h4><%= rekordi.gold_per_min.hero %></h4>
+			  	<img class="img-thumbnail" src="/img/heroes/<%= rekordi.gold_per_min.img %>" width="160" height="80">
+			  	<h4><span class="label label-default"><%= rekordi.gold_per_min.gold_per_min %></span></h4>
+			 </div>
+			<div class="col-md-4 centered">
+			  	<h3><strong>Broj ubijenih kripova</strong></h3>
+			  	<h4><%= rekordi.last_hits.hero %></h4>
+			  	<img class="img-thumbnail" src="/img/heroes/<%= rekordi.last_hits.img %>" width="160" height="80">
+			  	<h4><span class="label label-default"><%= rekordi.last_hits.last_hits %></span></h4>
+			 </div>
+			<div class="col-md-4 centered">
+			  	<h3><strong>Najviše negiranja kripova</strong></h3>
+			  	<h4><%= rekordi.denies.hero %></h4>
+			  	<img class="img-thumbnail" src="/img/heroes/<%= rekordi.denies.img %>" width="160" height="80">
+			  	<h4><span class="label label-default"><%= rekordi.denies.denies %></span></h4>
+			 </div>
 		</div>
   <% include ../partials/footer %>
