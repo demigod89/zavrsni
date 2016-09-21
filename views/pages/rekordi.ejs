@@ -5,6 +5,16 @@
 			<h3>Rekordi</h3>
 		</div>
 		<div class="row">
+			<div class="col-md-6 centered">
+			  	<h3><strong>Prosječan broj ubojstva za <%= broj %> zadnjih mečeva</strong></h3>
+			  	<h4><%= opcenito.kills.toFixed(2) %></h4>
+			 </div>
+			<div class="col-md-6 centered">
+			  	<h3><strong>Prosječan broj smrti za <%= broj %> zadnjih mečeva</strong></h3>
+			  	<h4><%= opcenito.deaths.toFixed(2) %></h4>
+			 </div>
+		</div>
+		<div class="row">
 		  <div class="col-md-4 centered">
 		  	<h3><strong>Ubojstva heroja</strong></h3>
 		  	<h4><%= rekordi.kills.hero %></h4>

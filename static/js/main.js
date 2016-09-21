@@ -122,6 +122,27 @@ $(document).ready(function () {
           '<button type="button" class="btn btn-success" onClick="prikaziDetalje(' + mec.match_id + ')">Detalji</button>'
       ] ).draw();
     });
+  } else if (window.location.pathname === '/about') {
+    var najigranijiTable = $('#najigraniji').DataTable({
+      "language": {
+        "emptyTable":"Podaci se učitavaju"
+      },
+      "order": [[ 2, "desc" ]]
+    });
+    najigraniji.forEach(function(hero) {
+      heroji.forEach(function(hero1) {
+        if(hero.hero_id === hero1.id.toString()) {
+          var entry = {
+
+          }
+          najigranijiTable.row.add( [
+            hero1.localized_name,
+            '<img class="img-thumbnail" src=' + '/img/heroes/' + hero1.localized_name.toLowerCase().split(' ').join('_') + '_full.png' + ' width="80" height="40">',
+            hero.games,
+          ] ).draw();
+        }
+      });
+    });
   }
 
 });

@@ -78,8 +78,19 @@ app.get('/', function(req, res) {
 });
 
 // about page 
-app.get('/about', function(req, res) {
-    res.render('pages/about', { user: req.user });
+app.get('/about', ensureAuthenticated, function(req, res) {
+    dota.getPlayedHeroes(req.user.id, function (data, response) {
+      var najigraniji = data.slice(0, 6);
+      var collection = baza.db.collection('steam_power_heroji');
+      // Find some documents 
+      collection.find({}).toArray(function(err, heroji) {
+        if (err) {
+          console.log(err);
+          return;
+        }
+        res.render('pages/about', { user: req.user, najigraniji:najigraniji, heroji:heroji });
+      });
+    });
 });
 
 // mec page
@@ -134,13 +145,27 @@ app.get('/rekordi', ensureAuthenticated, function(req, res){
         console.log(err);
         return;
       }
-      if (rekordi.length === 0) {
-        dota.insertRecords(req.user.id, function (rekordi) {
-          res.render('pages/rekordi', { user: req.user, rekordi: rekordi[0] }); 
+      var accId = dota.getAccId(req.user.id);
+      var collection = baza.db.collection('detalji');
+      collection.aggregate([
+          { "$unwind": "$players" },  
+          { "$match": { "players.account_id": accId } },                                                                                                                                                                        
+          { "$group": {
+              "_id": "$players.account_id",
+              "kills": { "$avg": "$players.kills" },
+              "deaths": { "$avg": "$players.deaths" },
+          }},
+      ]).toArray(function(err, opcenito) {
+        collection.count(function(error, broj) {
+          if (rekordi.length === 0) {
+            dota.insertRecords(req.user.id, function (rekordi) {
+              res.render('pages/rekordi', { user: req.user, rekordi: rekordi[0], opcenito: opcenito[0], broj:broj  }); 
+            });
+          } else {
+            res.render('pages/rekordi', { user: req.user, rekordi: rekordi[0], opcenito: opcenito[0], broj:broj }); 
+          }
         });
-      } else {
-        res.render('pages/rekordi', { user: req.user, rekordi: rekordi[0] }); 
-      }
+      });
     }); 
 });
 
