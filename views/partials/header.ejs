@@ -27,22 +27,22 @@
                        DOTA 2 Personal
                     </a>
                 </li>
+                <li>
+                     <a href="/heroji">Heroji</a>
+                </li>
                 <% if (user) { %>
                 <li>
                     <a href="/about">Najviše igrani heroji</a>
                 </li>
-                <% } %>
+                 <% } %>
+                  <% if (user) { %>
+                <li>
+                    <a href="/rekordi">Rekordi</a>
+                </li>
+                  <% } %>
                 <% if (user) { %>
                 <li>
                     <a href="/mec">Mečevi</a>
-                </li>
-                 <% } %>
-                <li>
-                    <a href="/heroji">Heroji</a>
-                </li>
-                <% if (user) { %>
-                <li>
-                    <a href="/rekordi">Rekordi</a>
                 </li>
                  <% } %>
                 </ul>

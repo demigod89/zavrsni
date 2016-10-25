@@ -41,7 +41,6 @@ passport.use(new SteamStrategy({
 var app = express();
 
 
-
 // set the view engine to ejs
 app.set('view engine', 'ejs');
 
@@ -170,9 +169,9 @@ app.get('/rekordi', ensureAuthenticated, function(req, res){
 });
 
 //kontakt
-app.get('/kontakt', function(req, res) {																																																																																																																																					
+app.get('/kontakt', function(req, res) {																																																																																																																																				
     res.render('pages/kontakt', { user: req.user });
-});
+  });
 
 app.get('/login', function(req, res) {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
     res.render('pages/login');

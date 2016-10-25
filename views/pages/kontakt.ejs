@@ -1,26 +1,48 @@
 <% include ../partials/header %>
 <% include ../partials/headerimg %>
 
-  <h1>Kontakt forma</h1>
-<section>
-  <div class="arrow-up"></div>
-  <form id="contact" class="form-horizontal" role="form" action="mailto:drazen.strbad89@gmail.com">
-    <div class="form-group">  
-      <div class="col-sm-12">
-        <input id="name" name="name" type="text" placeholder="NAME" class="form-control">
+  <div class="container">
+  <div class="row">
+      <div class="col-md-6 col-md-offset-3">
+        <div class="well well-sm">
+          <form class="form-horizontal" action="/kontakt" method="post">
+          <fieldset>
+            <legend class="text-center">Kontaktirajte nas!</legend>
+    
+            <!-- Name input-->
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="name">Ime</label>
+              <div class="col-md-9">
+                <input id="name" name="name" type="text" placeholder="Ime" class="form-control" required="true">
+              </div>
+            </div>
+    
+            <!-- Email input-->
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="email">Vaš E-mail</label>
+              <div class="col-md-9">
+                <input id="email" name="email" type="text" placeholder="E-mail" class="form-control" required="true">
+              </div>
+            </div>
+    
+            <!-- Message body -->
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="message">Vaša Poruka</label>
+              <div class="col-md-9">
+                <textarea class="form-control" id="message" name="message" placeholder="Unesite Vašu poruku ovdje..."  required="true"></textarea>
+              </div>
+            </div>
+    
+            <!-- Form actions -->
+            <div class="form-group">
+              <div class="col-md-12 text-right">
+                <input type="submit" type="send" value="Pošalji">
+              </div>
+            </div>
+          </fieldset>
+          </form>
+        </div>
       </div>
-    </div>
-    <div class="form-group">  
-      <div class="col-sm-12">
-        <input id="email" name="email" type="email" placeholder="EMAIL" class="form-control">
-      </div>
-    </div>
-    <div class="form-group">  
-      <div class="col-sm-12">
-        <textarea class="form-control" id="message" name="message" placeholder="MESSAGE"></textarea>
-      </div>
-    </div>
-    <button id="send" name="send" class="btn btn-block">Pošalji!</button>
-  </form>
-</section>
+  </div>
+</div>
 <% include ../partials/footer %>
