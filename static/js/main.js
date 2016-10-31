@@ -1,14 +1,12 @@
 
 function timeConverter(UNIX_timestamp){
   var a = new Date(UNIX_timestamp * 1000);
-  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var months = ['Siječanj','Veljača','Ožujak','Travanj','Svibanj','Lipanj','Srpanj','Kolovoz','Rujan','Listopad','Studeni','Prosinac'];
   var year = a.getFullYear();
   var month = months[a.getMonth()];
   var date = a.getDate();
   var hour = a.getHours();
-  var min = a.getMinutes();
-  var sec = a.getSeconds();
-  var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
+  var time = date + '. ' + month + ' ' + year + ', ' + hour + ' sati' ;
   return time;
 }
 
@@ -122,7 +120,7 @@ $(document).ready(function () {
           '<button type="button" class="btn btn-success" onClick="prikaziDetalje(' + mec.match_id + ')">Detalji</button>'
       ] ).draw();
     });
-  } else if (window.location.pathname === '/about') {
+  } else if (window.location.pathname === '/najigraniji') {
     var najigranijiTable = $('#najigraniji').DataTable({
       "language": {
         "emptyTable":"Podaci se učitavaju"
@@ -132,9 +130,6 @@ $(document).ready(function () {
     najigraniji.forEach(function(hero) {
       heroji.forEach(function(hero1) {
         if(hero.hero_id === hero1.id.toString()) {
-          var entry = {
-
-          }
           najigranijiTable.row.add( [
             hero1.localized_name,
             '<img class="img-thumbnail" src=' + '/img/heroes/' + hero1.localized_name.toLowerCase().split(' ').join('_') + '_full.png' + ' width="80" height="40">',
@@ -155,6 +150,5 @@ $('.show-list').click(function(){
 $('.hide-list').click(function(){
   $('.wrapper').removeClass('list-mode');
 });
-
 
 

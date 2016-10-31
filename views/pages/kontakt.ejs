@@ -11,9 +11,9 @@
     
             <!-- Name input-->
             <div class="form-group">
-              <label class="col-md-3 control-label" for="name">Ime</label>
+              <label class="col-md-3 control-label" for="name">Naslov</label>
               <div class="col-md-9">
-                <input id="name" name="name" type="text" placeholder="Ime" class="form-control" required="true">
+                <input id="name" name="name" type="text" placeholder="Naslov" class="form-control" required oninvalid="this.setCustomValidity('Popunite ovo polje! ')" oninput="setCustomValidity('')">
               </div>
             </div>
     
@@ -21,7 +21,7 @@
             <div class="form-group">
               <label class="col-md-3 control-label" for="email">Vaš E-mail</label>
               <div class="col-md-9">
-                <input id="email" name="email" type="text" placeholder="E-mail" class="form-control" required="true">
+                <input id="email" name="email" type="text" placeholder="E-mail" class="form-control" required oninvalid="this.setCustomValidity('Popunite ovo polje! ')" oninput="setCustomValidity('')">
               </div>
             </div>
     
@@ -29,7 +29,7 @@
             <div class="form-group">
               <label class="col-md-3 control-label" for="message">Vaša Poruka</label>
               <div class="col-md-9">
-                <textarea class="form-control" id="message" name="message" placeholder="Unesite Vašu poruku ovdje..."  required="true"></textarea>
+                <textarea class="form-control" id="message" name="message" placeholder="Unesite Vašu poruku ovdje..."  required oninvalid="this.setCustomValidity('Popunite ovo polje! ')" oninput="setCustomValidity('')"></textarea>
               </div>
             </div>
     
@@ -39,6 +39,17 @@
                 <input type="submit" type="send" value="Pošalji">
               </div>
             </div>
+            <% if (response) { %>
+              <% if (success) { %>
+                <div class="alert alert-success" role="alert">
+                <%= description %>
+                </div>
+               <% } else { %>
+                <div class="alert alert-danger" role="alert">
+                    <%= description %>
+                </div>
+                <%  } %>
+              <%  } %>
           </fieldset>
           </form>
         </div>

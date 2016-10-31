@@ -316,6 +316,8 @@ footer {
 }
 footer .panel {
   box-shadow: none;
+  width:100%;
+
 }
 .collapse-footer {}
 .collapse-footer p {
@@ -914,4 +916,7 @@ div img {
   display: inline-block !important;
 }
 */
-
+.container-full {
+  margin: 0 auto;
+  width: 100%;
+}

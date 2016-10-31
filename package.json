@@ -12,10 +12,12 @@
     "ejs": "~2.4.1",
     "express": "~4.13.4",
     "express-session": "~1.14.0",
+    "intl": "^1.2.5",
     "mongodb": "~2.1.16",
     "passport": "^0.3.2",
     "passport-steam": "^1.0.4",
     "sendgrid": "^4.7.0",
+    "sendgrid-nodejs": "0.1.0-2",
     "steam": "~1.4.0"
   },
   "devDependencies": {},

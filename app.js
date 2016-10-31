@@ -10,6 +10,8 @@ var express = require('express')
   , SteamStrategy = require('passport-steam').Strategy;
 
 
+var sg = require('sendgrid')('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');
+var helper = require('sendgrid').mail;
 
 passport.serializeUser(function(user, done) {
   done(null, user);
@@ -77,7 +79,7 @@ app.get('/', function(req, res) {
 });
 
 // about page 
-app.get('/about', ensureAuthenticated, function(req, res) {
+app.get('/najigraniji', ensureAuthenticated, function(req, res) {
     dota.getPlayedHeroes(req.user.id, function (data, response) {
       var najigraniji = data.slice(0, 6);
       var collection = baza.db.collection('steam_power_heroji');
@@ -87,7 +89,7 @@ app.get('/about', ensureAuthenticated, function(req, res) {
           console.log(err);
           return;
         }
-        res.render('pages/about', { user: req.user, najigraniji:najigraniji, heroji:heroji });
+        res.render('pages/najigraniji', { user: req.user, najigraniji:najigraniji, heroji:heroji });
       });
     });
 });
@@ -170,8 +172,53 @@ app.get('/rekordi', ensureAuthenticated, function(req, res){
 
 //kontakt
 app.get('/kontakt', function(req, res) {																																																																																																																																				
-    res.render('pages/kontakt', { user: req.user });
+    res.render('pages/kontakt', { user: req.user, success: true, response: false, description: ''  });
   });
+
+
+
+ app.post('/kontakt', function(req, res) {
+
+    var name = req.body.name
+        email= req.body.email
+        msg= req.body.message;
+        all= email+ ' : ' + msg ;
+
+    var from_email = new helper.Email('drazen.strbad89@gmail.com');
+    var to_email = new helper.Email('drazen.strbad89@gmail.com');
+    var subject = name;
+    var content = new helper.Content('text/plain', all);
+    var mail = new helper.Mail(from_email, subject, to_email, content);
+
+
+    var request = sg.emptyRequest({
+      method: 'POST',
+      path: '/v3/mail/send',
+      body: mail.toJSON(),
+    });
+
+    sg.API(request, function(error, response) {
+      if(!error){
+          res.render('pages/kontakt', {
+            user: req.user,
+            success: true,
+            response: true,
+            description:'Poruka poslana! Kontaktirat ćemo Vas uskoro.'
+          });
+      } else {
+        res.render('pages/kontakt', {
+          user: req.user,
+          success: false,
+          response: true,
+          description: 'Poruka nije poslana! Molimo pokušajte ponovo.'
+        });
+      }
+      console.log(response.statusCode);
+      console.log(response.body);
+      console.log(response.headers);
+    });
+}); 
+
 
 app.get('/login', function(req, res) {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
     res.render('pages/login');
