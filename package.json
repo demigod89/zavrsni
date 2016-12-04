@@ -5,6 +5,7 @@
   "main": "app.js",
   "dependencies": {
     "async": "^2.0.1",
+    "bignumber.js": "^3.0.1",
     "body-parser": "~1.15.2",
     "crypto": "0.0.3",
     "dota": "0.0.2",

@@ -6,7 +6,6 @@ var baza =  require ('./baza.js');
 
 var host = 'http://api.steampowered.com/'
 var key = '68D4BBB60FB8A8F9C99A62145A7B6E27'
-var slikeitem = 'http://cdn.dota2.com/apps/dota2/images/items/'
 var host1 = 'https://api.opendota.com/api/players/'
 
 
@@ -23,7 +22,7 @@ var getAccId = function (account_id) {
 exports.getAccId = getAccId
 
 var getMatchHistory = function (account_id, callback) {
-	account_id = new bignumber(account_id).minus('76561197960265728') - 0
+	account_id = new bignumber(account_id).minus('76561197960265728') - 0;
 	client.get(host + "IDOTA2Match_570/GetMatchHistory/v1?key=" + key + "&account_id=" + account_id, callback);
 }
 
@@ -173,19 +172,14 @@ var spremiDetalje = function () {
 		}
 		mecevi.forEach(function(mec) {
 			getMatchDetails(mec.match_id, function (data, response) {
-				var collection = baza.db.collection('detalji');
-				collection.remove({match_id: mec.match_id}, function(err, result) {
-				});
-				collection.insertMany([data], function(err, result) {
-					if (err) {
-						if (err.message.indexOf('duplicate key') === -1) {
-							console.log(err);
-						}
-					}
-				});
+				baza.db.collection('detalji').update({ "match_id": data.match_id }, { '$set': data }, { 'upsert': true });
 			});
 		});
 	});
 }
 
-setInterval(spremiDetalje, 24*60*60*1000);
+setTimeout(function(){ spremiDetalje(); }, 1000);
+
+setInterval(function() {
+	spremiDetalje();
+}, 24*60*60*1000);

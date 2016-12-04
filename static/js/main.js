@@ -6,7 +6,8 @@ function timeConverter(UNIX_timestamp){
   var month = months[a.getMonth()];
   var date = a.getDate();
   var hour = a.getHours();
-  var time = date + '. ' + month + ' ' + year + ', ' + hour + ' sati' ;
+  var minute = (a.getMinutes()<10?'0':'') + a.getMinutes();
+  var time = date + '. ' + month + ' ' + year + ', ' + hour + ':' + minute +' h' ;
   return time;
 }
 
@@ -56,7 +57,6 @@ $(document).ready(function () {
             }
           });
         }
-        console.log(data);
         Object.keys(data).forEach(function(key) {
             switch(data[key].PrimaryStat) {
               case 0:
@@ -100,7 +100,7 @@ $(document).ready(function () {
         "emptyTable":"Podaci se učitavaju"
       },
       "pageLength": 10,
-      "order": [[ 1, "desc" ]]
+      "order": [[ 0, "desc" ]]
     });
     mecevi.result.matches.forEach(function(mec) {
       var hero = null;

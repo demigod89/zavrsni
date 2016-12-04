@@ -158,13 +158,40 @@ app.get('/rekordi', ensureAuthenticated, function(req, res){
           }},
       ]).toArray(function(err, opcenito) {
         collection.count(function(error, broj) {
-          if (rekordi.length === 0) {
-            dota.insertRecords(req.user.id, function (rekordi) {
-              res.render('pages/rekordi', { user: req.user, rekordi: rekordi[0], opcenito: opcenito[0], broj:broj  }); 
-            });
-          } else {
-            res.render('pages/rekordi', { user: req.user, rekordi: rekordi[0], opcenito: opcenito[0], broj:broj }); 
-          }
+          collection.mapReduce( 
+            function() {
+              emit(this.radiant_win, this.duration);
+            },
+            function(key, values) {
+              return Math.max.apply(Math, values) / 3600;
+            },
+            {
+                query:{ "players": {
+                    $elemMatch: {
+                      "account_id": accId,
+                    }
+                  }
+                },
+                // sort: {'count': -1},
+                // limit: 10,
+                // jsMode: true,
+                // verbose: false,
+                out: { inline: 1 }
+            },
+            function(err, results) {
+              var max = results[1].value;
+              if (results[0].value > results[1].value) {
+                max = results[0].value;
+              }
+              if (rekordi.length === 0) {
+                dota.insertRecords(req.user.id, function (rekordi) {
+                  res.render('pages/rekordi', { user: req.user, rekordi: rekordi[0], opcenito: opcenito[0], broj:broj, max:max  }); 
+                });
+              } else {
+                res.render('pages/rekordi', { user: req.user, rekordi: rekordi[0], opcenito: opcenito[0], broj:broj, max:max }); 
+              }
+            }
+          );
         });
       });
     }); 
