@@ -7,7 +7,7 @@ function timeConverter(UNIX_timestamp){
   var date = a.getDate();
   var hour = a.getHours();
   var minute = (a.getMinutes()<10?'0':'') + a.getMinutes();
-  var time = date + '. ' + month + ' ' + year + ', ' + hour + ':' + minute +' h' ;
+  var time = date + '. ' + month + ' ' + year + ', ' + hour + ':' + minute +'h' ;
   return time;
 }
 
