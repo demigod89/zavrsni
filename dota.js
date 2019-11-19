@@ -61,7 +61,7 @@ exports.podacimecevi = function (account_id, callback) {
 		});
 };
 
-// http://api.steampowered.com/IEconDOTA2_570/GetGameItems/v1?key=68D4BBB60FB8A8F9C99A62145A7B6E27&language=en
+
 
 exports.getGameItems = function (callback) {
 	client.get(host + "IEconDOTA2_570/GetHeroes/v1?key=" + key + "&language=en", callback);
