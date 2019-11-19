@@ -13,7 +13,6 @@ var player = null;
 var heroji;
 exports.heroji = heroji;
 
-// http://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/v1?key=68D4BBB60FB8A8F9C99A62145A7B6E27&account_id=208648896 
 
 var getAccId = function (account_id) {
 	return new bignumber(account_id).minus('76561197960265728') - 0;
