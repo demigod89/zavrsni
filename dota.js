@@ -25,7 +25,7 @@ var getMatchHistory = function (account_id, callback) {
 	client.get(host + "IDOTA2Match_570/GetMatchHistory/v1?key=" + key + "&account_id=" + account_id, callback);
 }
 
-// http://api.steampowered.com/IEconDOTA2_570/GetHeroes/v1?key=68D4BBB60FB8A8F9C99A62145A7B6E27&language=en
+
 
 var getHeroes = function (callback) {
 	client.get(host + "IEconDOTA2_570/GetHeroes/v1?key=" + key + "&language=en" , callback);
@@ -66,7 +66,7 @@ exports.getGameItems = function (callback) {
 	client.get(host + "IEconDOTA2_570/GetHeroes/v1?key=" + key + "&language=en", callback);
 }
 
-// http://api.steampowered.com/IDOTA2Match_570/GetMatchDetails/v1?key=68D4BBB60FB8A8F9C99A62145A7B6E27&match_id=2622697116
+
 
 var getMatchDetails = function (match_id,callback) {
 	client.get('https://api.opendota.com/api/matches/' + match_id, callback);
