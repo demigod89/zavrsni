@@ -5,7 +5,7 @@ var async = require('async');
 var baza =  require ('./baza.js');
 
 var host = 'http://api.steampowered.com/'
-var key = '68D4BBB60FB8A8F9C99A62145A7B6E27'
+var key = 'xxxxxxxxxxxxxxxxxxxxxxxxx'
 var host1 = 'https://api.opendota.com/api/players/'
 
 
